@@ -12,13 +12,17 @@ page.open('https://www.ksl.com/auto/search/index?p=&keyword=memberId%3A2982824&m
         phantom.exit();
     }
     else {
-        var blocks = page.evaluate(function() {
-            return document.querySelectorAll("div[class='photo-block']");
+        var script1 = 'function() { window.blocks = document.querySelectorAll("div[class=\'photo-block\']"); }';
+        var script2 = 'function() { return window.blocks.array.map(function(element) { element.querySelector("a").href }); }';
+        page.evaluateJavaScript(script1);
+        var links = page.evaluateJavaScript(script2);
+        console.log(links[0]);
+        /*var blocks = page.evaluate(function() {
+            var elems = document.querySelectorAll("div[class='photo-block']");
+            
+            return elems;
         });
-        blocks.array.forEach(element => {
-            console.log(element.getElementsByTagName('a')[0].href)
-        });
-        console.log(blocks.length)
+        console.log(blocks); */
 
         phantom.exit();
     }
