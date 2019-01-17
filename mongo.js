@@ -1,9 +1,9 @@
 var MongoClient = require('mongodb').MongoClient;
-var ObjectId = require('mongodb').ObjectID;
-var url = '**connection string uri here**';
-var dbName = 'mongodb';
-var mainUserCollection = 'users';
-var tempUserCollection = 'temp-users';
+//var ObjectId = require('mongodb').ObjectID;
+var url = 'mongodb://strickland-auto:strickland1@ds011873.mlab.com:11873/heroku_lbsm09cg';
+var dbName = 'heroku_lbsm09cg';
+var carURLCollection = 'car-urls';
+/*var tempUserCollection = 'temp-users';
 var monthNames = [
 	'January',
 	'February',
@@ -18,17 +18,18 @@ var monthNames = [
 	'November',
 	'December'
 ];
+*/
 var self = this;
 
-self.insertNewUserDocument = function(userObject, callback) {
+self.insertNewUrl = function(userObject, callback) {
 	MongoClient.connect(
 		url,
 		{ useNewUrlParser: true },
 		function(err, db) {
 			if (err) throw err;
 			var dbo = db.db(dbName);
-			var collection = dbo.collection(mainUserCollection);
-			collection.insert(userObject, function(err, result) {
+			var collection = dbo.collection(carURLCollection);
+			collection.insertOne(userObject, function(err, result) {
 				if (err) throw err;
 				callback(result);
 				db.close();
@@ -36,6 +37,24 @@ self.insertNewUserDocument = function(userObject, callback) {
 		}
 	);
 };
+
+self.removeAllDocumentsInCollection = function(callback) {
+	MongoClient.connect(
+		url,
+		{ useNewUrlParser: true },
+		function(err, db) {
+			if (err) throw err;
+			var dbo = db.db(dbName);
+			var collection = dbo.collection(carURLCollection);
+			collection.remove({}, function(err, result) {
+				if (err) throw err;
+				callback(result);
+				db.close();
+			});
+		}
+	);
+};
+/*
 self.storeReviewApp = function(params, callback) {
 	MongoClient.connect(
 		url,
@@ -158,3 +177,4 @@ self.tempUserCountByMonth = function(callback) {
 		}
 	);
 };
+*/
