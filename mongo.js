@@ -38,7 +38,7 @@ self.insertNewUrl = function(userObject, callback) {
 	);
 };
 
-self.removeAllDocumentsInCollection = function(callback) {
+self.removeAllDocumentsInUrlsCollection = function(callback) {
 	MongoClient.connect(
 		url,
 		{ useNewUrlParser: true },
@@ -54,6 +54,23 @@ self.removeAllDocumentsInCollection = function(callback) {
 		}
 	);
 };
+
+self.getAllUrls = function(callback) {
+	MongoClient.connect(
+		url,
+		{ useNewUrlParser: true },
+		function(err, db) {
+			if (err) throw err;
+			var dbo = db.db(dbName);
+			var collection = dbo.collection(carURLCollection);
+			collection.find({}).toArray(function(err, result) {
+    			if (err) throw err;
+    			callback(result);
+    			db.close();
+  			});
+		}
+	);
+};
 /*
 self.storeReviewApp = function(params, callback) {
 	MongoClient.connect(
@@ -62,12 +79,7 @@ self.storeReviewApp = function(params, callback) {
 		function(err, db) {
 			if (err) throw err;
 			var dbo = db.db(dbName);
-			var collection = dbo.collection(mainUserCollection);
-			collection.updateOne({ $set: params }, function(err, result) {
-				if (err) throw err;
-				callback(result);
-				db.close();
-			});
+			var collection = dbo.collection(mainUserCollection).find({})
 		}
 	);
 };
