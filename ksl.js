@@ -1,6 +1,17 @@
-var XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
-const request = require('request');
-var username = 'key';
+//var XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
+var mongo = require('./mongo.js');
+mongo.getAllUrls(function(allUrls) {
+    var sorted = allUrls.sort(function(a, b) {
+        if (a[a.length - 1] > b[b.length - 1])
+            return 1;
+        else if (a[a.length - 1] < b[b.length - 1])
+            return -1;
+        else
+            return 0;
+    });
+    console.log(sorted);
+});
+/*var username = 'key';
 var password = '******';
 
 var self = this;
@@ -17,7 +28,7 @@ function getSearchData() {
 	/*request.get( 'https://www.ksl.com/auto/search/index?p=&keyword=memberId%3A2982824&miles=0&page=0', function(error, response, body) {
 		if (error) throw error;
 		console.log(body);
-	});*/
+	});
 }
 getSearchData();
 /*
