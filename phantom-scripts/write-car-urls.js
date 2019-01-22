@@ -16,26 +16,26 @@ var phantomExecutable = "../phantomjs";
 /**
  * This method converts a Uint8Array to its string representation
  */
-function Uint8ArrToString(myUint8Arr){
+function Uint8ArrToString(myUint8Arr) {
     return String.fromCharCode.apply(null, myUint8Arr);
 };
 console.log("testing");
-mongo.removeAllDocumentsInUrlsCollection(function(result) {
+mongo.removeAllDocumentsInUrlsCollection(function (result) {
     //console.log(result);
 });
 var child = spawn(phantomExecutable, args, options);
 
 // Receive output of the child process
-child.stdout.on('data', function(data) {
+child.stdout.on('data', function (data) {
     var textData = Uint8ArrToString(data);
     var urls = [];
     if (textData.includes('listing')) {
         urls = textData.split(/\n/);
     }
     console.log(urls.length);
-    urls.forEach(function(url) {
-        var insertObject = { url : url };
-        mongo.insertNewUrl(insertObject, function(result) {
+    urls.forEach(function (url) {
+        var insertObject = { url: url };
+        mongo.insertNewUrl(insertObject, function (result) {
             console.log(url);
             //console.log(result);
         });
@@ -44,12 +44,12 @@ child.stdout.on('data', function(data) {
 });
 
 // Receive error output of the child process
-child.stderr.on('data', function(err) {
+child.stderr.on('data', function (err) {
     var textErr = Uint8ArrToString(err);
     console.log(textErr);
 });
 
 // Triggered when the process closes
-child.on('close', function(code) {
+child.on('close', function (code) {
     console.log('Process closed with status code: ' + code);
 });
