@@ -10,100 +10,99 @@ console.log('test');
 console.log(system.args[0]);
 var urls = system.args;
 urls.shift();
-console.log(urls[0]);
+console.log("Array length is: " + urls.length);
 
 var x = 0;
 var shouldRetry = false;
-var callback = function(urls, retry) {
+var callback = function(urls) {
     var url = urls[x];
     console.log(url);
     if (url) {
-    return page.open(url, function (status) {
-        console.log("URL: " + url);
-        console.log("Status: " + status);
+        return page.open(url, function (status) {
+            console.log("URL: " + url);
+            console.log("Status: " + status);
+            console.log("Value of X: " + x);
 
-        if (status !== "success") { 
-            if (shouldRetry) {
-                phantom.exit();
+            if (status !== "success") { 
+                if (shouldRetry) {
+                    phantom.exit();
+                }
+                else {
+                    shouldRetry = true;
+                    return setTimeout(2500, callback(urls));  
+                }         
             }
             else {
-                shouldRetry = true;
-                return setTimeout(1000, callback(urls));  
-            }         
-        }
-        else {
-            x++;
-        /*
-        var script1 = 'function() { window.blocks = document.querySelectorAll("div[class=\'photo-block\']"); }';
-        var script2 = 'function() { return window.blocks.array.map(function(element) { element.querySelector("a").href }); }';
-        page.evaluateJavaScript(script1);
-        var links = page.evaluateJavaScript(script2);
-        console.log(links[0]);*/
-
-
+                
             /*var mainChunk = page.evaluate(function() {
                 return document.querySelector("div[class='main-column']").getAttribute("data-listing");
-            });*/
-            /*
-            var description = page.includeJs("http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js", function() {
-                return page.evaluate(function() {
-                    $("a[class^='more']").click();
-                    return document.querySelector("div[class='full']").innerText;
-                });
-            });*/
+            }); */
+            x++;
+            var description = page.evaluate(function() {
+                var a = document.querySelector("a[class^='more']");
+                var e = document.createEvent('MouseEvents');
+                e.initMouseEvent('click', true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+                a.dispatchEvent(e);
+                waitforload = true;
+                return document.querySelector("div[class='full']").innerText;
+            });
+            
             var specRowsEven = page.evaluate(function() {
+                waitforload = true;
                 return [].map.call(document.querySelectorAll("li[class^='specificationsTableRowEven']"), function(elem) {
                     return elem.innerText;
                 });
             });
             var specRowsOdd = page.evaluate(function() {
+                waitforload = true;
                 return [].map.call(document.querySelectorAll("li[class^='specificationsTableRowOdd']"), function(elem) {
                     return elem.innerText;
                 });
-            });/*
+            });
+            
             var imgUrls = page.evaluate(function() {
-                return [].map.call(document.querySelectorAll("li[style^='width'"), function(elem) {
+                waitforload = true;
+                return [].map.call(document.querySelectorAll("li[style^='width']"), function(elem) {
                     return elem.firstChild.src;
 
                 });
-            });*/
-            //console.log("description: " + description);  
-               
+            });
+              
+            console.log("description:" + description);   
             for(var i = 0; i < specRowsEven.length; ++i) {
                 if(specRowsEven[i]) {
-                    console.log("car-info: " + specRowsEven[i]);                    
+                    console.log("car-info:" + specRowsEven[i]);                    
                 }
             }    
              
             for(var i = 0; i < specRowsOdd.length; ++i) {
                 if(specRowsOdd[i]) {
-                    console.log("car-info: " + specRowsOdd[i]);                    
+                    console.log("car-info:" + specRowsOdd[i]);                    
                 }
             }
-            /*
+            
             for(var i = 0; i < imgUrls.length; ++i) {
                 if(imgUrls[i]) {
-                    console.log("imgUrls: " + imgUrls[i]);                    
+                    console.log("imgUrls:" + imgUrls[i]);                    
                 }
-            }*/
+            }
+            
 
-            if (x < urls.length) {
+
+                if (x < urls.length) {
                 // navigate to the next url and the callback is this function (recursion)
-                return callback(urls);
-            } else {
-                // try navigate to the next url (it is undefined because it is the last element) so the callback is exit
-                return callback(urls, function () {
-                    console.log(urls[x]);
+                    return callback(urls);
+                } else {
+                // exit phantom once the array has been iterated through
                     phantom.exit();
-                });
-            }          
-        }  
-    });   
-}
-else {
-    x++;
-    return callback(urls);
-}
+                }          
+            }  
+        });   
+    }   
+    else {
+        x++;
+        return callback(urls);
+    }
 }
 callback(urls);
 
