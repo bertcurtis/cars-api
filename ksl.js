@@ -2,12 +2,9 @@
 var mongo = require('./mongo.js');
 mongo.getAllUrls(function(allUrls) {
     var sorted = allUrls.sort(function(a, b) {
-        if (a[a.length - 1] > b[b.length - 1])
-            return 1;
-        else if (a[a.length - 1] < b[b.length - 1])
-            return -1;
-        else
-            return 0;
+		var fval = a.split('=');
+		var sval = b.split('=');
+		return fval[1] - sval[1];
     });
     console.log(sorted);
 });

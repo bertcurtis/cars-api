@@ -10,28 +10,32 @@ urls.shift();
 console.log("Array length is: " + urls.length);
 
 var x = 0;
-var shouldRetry = false;
+var failureIncrement = 0;
 var callback = function (urls) {
   var url = urls[x];
   console.log(url);
   if (url) {
     return page.open(url, function (status) {
-      console.log("URL: " + url);
-      console.log("Status: " + status);
-      console.log("Value of X: " + x);
+      console.log("url=" + url);
+      console.log("Status=" + status);
+      console.log("Value of X=" + x);
 
       if (status !== "success") {
-        if (shouldRetry) {
+        if (failureIncrement > 2) {
           phantom.exit();
         } else {
-          shouldRetry = true;
+          ++failureIncrement;
           return setTimeout(2500, callback(urls));
         }
       } else {
+        try {
+        x++;
         /*var mainChunk = page.evaluate(function() {
                 return document.querySelector("div[class='main-column']").getAttribute("data-listing");
             }); */
-        x++;
+        var carInfo = [],
+            imgs = [],
+            desc;
         var description = page.evaluate(function () {
           var a = document.querySelector("a[class^='more']");
           var e = document.createEvent("MouseEvents");
@@ -87,29 +91,40 @@ var callback = function (urls) {
             }
           );
         });
-
-        console.log("description:" + description);
+        
+        
+        desc = description.trim();
         for (var i = 0; i < specRowsEven.length; ++i) {
           if (specRowsEven[i]) {
-            console.log("car-info:" + specRowsEven[i]);
+            carInfo.push(specRowsEven[i].trim());
           }
         }
 
         for (var i = 0; i < specRowsOdd.length; ++i) {
           if (specRowsOdd[i]) {
-            console.log("car-info:" + specRowsOdd[i]);
+            carInfo.push(specRowsOdd[i].trim());
           }
         }
 
-        for (var i = 0; i < imgUrls.length; ++i) {
+        for (var i = 0; i < imgUrls.length / 2; ++i) {
           if (imgUrls[i]) {
-            console.log("imgUrls:" + imgUrls[i]);
+            imgs.push(imgUrls[i].trim());
           }
         }
+        console.log("description=" + desc);
+        console.log("car-info=" + carInfo);
+        console.log("img-urls=" + imgs);
+      }
+      catch (err) {
+        console.log(err);
+        --x;
+        ++failureIncrement;
+        return setTimeout(2500, callback(urls));
+      }
 
         if (x < urls.length) {
           // navigate to the next url and the callback is this function (recursion)
-          return callback(urls);
+          return setTimeout(2000, callback(urls));
         } else {
           // exit phantom once the array has been iterated through
           phantom.exit();

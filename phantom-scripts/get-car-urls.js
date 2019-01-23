@@ -13,13 +13,6 @@ page.open('https://www.ksl.com/auto/search/index?p=&keyword=memberId%3A2982824&m
         phantom.exit();
     }
     else {
-        /*
-        var script1 = 'function() { window.blocks = document.querySelectorAll("div[class=\'photo-block\']"); }';
-        var script2 = 'function() { return window.blocks.array.map(function(element) { element.querySelector("a").href }); }';
-        page.evaluateJavaScript(script1);
-        var links = page.evaluateJavaScript(script2);
-        console.log(links[0]);*/
-
         var blocks = page.evaluate(function() {
             return [].map.call(document.querySelectorAll("div[class='photo-block']"), function(elem) {
                 return elem.querySelector("a").href;
