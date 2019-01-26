@@ -1,4 +1,4 @@
-var car = {
+/*var car = {
 	price: "",
 	vin: "",
 	make: "",
@@ -17,61 +17,13 @@ var car = {
 	fuel: "",
 	imgs: [],
 	kslurl: ""
-};
+};*/
 var descriptions = [],
 	carInfoArrs = [],
 	prices = [],
 	imgArrs = [],
 	kslUrls = [],
 	cars = [];
-
-var checkAttribute = function (input) {
-	var parsedInput = input.split(':');
-	switch (parsedInput[0].toLowerCase()) {
-		case 'vin':
-			car.vin = parsedInput[1].trim();
-			break;
-		case 'make':
-			car.make = parsedInput[1].trim();
-			break;
-		case 'model':
-			car.model = parsedInput[1].trim();
-			break;
-		case 'year':
-			car.year = parsedInput[1].trim();
-			break;
-		case 'mileage':
-			car.miles = parsedInput[1].trim();
-			break;
-		case 'trim':
-			car.trim = parsedInput[1].trim();
-			break;
-		case 'exterior color':
-			car.extcolor = parsedInput[1].trim();
-			break;
-		case 'interior color':
-			car.intcolor = parsedInput[1].trim();
-			break;
-		case 'transmission':
-			car.transmission = parsedInput[1].trim();
-			break;
-		case 'liters':
-			car.liters = parsedInput[1].trim();
-			break;
-		case 'cylinders':
-			car.cylinders = parsedInput[1].trim();
-			break;
-		case 'drive type':
-			car.drivetype = parsedInput[1].trim();
-			break;
-		case 'number of doors':
-			car.numdoors = parsedInput[1].trim();
-			break;
-		case 'fuel type':
-			car.fuel = parsedInput[1].trim();
-			break;
-	}
-}
 
 var parseCarData = function (data) {
 	for (var i = 0; i < data.length; ++i) {
@@ -91,38 +43,6 @@ var parseCarData = function (data) {
 			prices.push(data[i + 1]);
 		}
 	}
-	/*
-	if (data.startsWith('description')) {
-		car.description = data.split('=')[1];
-		return callback(car);
-	}
-	else if (data.startsWith('car-info')) {
-		var infoData = data.split('=');
-		var carInfos = infoData[1].split(',');
-		var infosCount = 0;
-		carInfos.forEach(function (infos) {
-			if (infosCount > carInfos.length) {
-				return callback(car);
-			}
-			else {
-				++infosCount;
-				checkAttribute(infos);
-			}
-		});
-	}
-	else if (data.startsWith('img-urls')) {
-		var imgs = data.split('=');
-		car.imgs = imgs[1].split(',');
-		return callback(car);
-	}
-	else if (data.startsWith('url')) {
-		car.kslurl = data.split('=')[1];
-		return callback(car);
-	}
-	else if (data.startsWith('price')) {
-		car.price = data.split('=')[1];
-		return callback(car);
-	}*/
 };
 
 var spawn = require("child_process").spawn;
@@ -147,6 +67,87 @@ var populateArgs = function (callback) {
 	});
 };
 populateArgs(function (args) {
+	var createCarObject = function (url, callback) {
+		var car = {};
+		var i = 0;		
+		while (i < carInfoArrs.length) {	
+			car.kslUrl = url.replace(/\n/, '');	
+			console.log(car.kslUrl);
+			var ci = carInfoArrs[i].split(',');
+			var d = descriptions[i].split(',');
+			var p = prices[i].split(',');
+			var iu = imgArrs[i].split(',');
+			//console.log("description:" + d[0]);
+			//console.log("price:" + p[0] + p[1]);
+			//console.log("imgurls:" + iu[0]);
+			//console.log("end of array:" + sample[sample.length -1]);
+			//console.log("index url:" + url);
+			console.log(ci[ci.length -1].replace('poop', ''));
+			if (ci[ci.length -1].replace('poop', '') == car.kslUrl) {				
+				for (var x = 0; x < ci.length; ++x) {
+					var parsedInput = ci[x].split(':');
+					//console.log("parsedInput:" + parsedInput[0].toLowerCase());
+					switch (parsedInput[0].toLowerCase()) {
+						case 'vin':
+							car.vin = parsedInput[1].trim();
+							break;
+						case 'make':
+							car.make = parsedInput[1].trim();
+							break;
+						case 'model':
+							car.model = parsedInput[1].trim();
+							break;
+						case 'year':
+							car.year = parsedInput[1].trim();
+							break;
+						case 'mileage':
+							car.miles = parsedInput[1].trim();
+							break;
+						case 'trim':
+							car.trim = parsedInput[1].trim();
+							break;
+						case 'exterior color':
+							car.extcolor = parsedInput[1].trim();
+							break;
+						case 'interior color':
+							car.intcolor = parsedInput[1].trim();
+							break;
+						case 'transmission':
+							car.transmission = parsedInput[1].trim();
+							break;
+						case 'liters':
+							car.liters = parsedInput[1].trim();
+							break;
+						case 'cylinders':
+							car.cylinders = parsedInput[1].trim();
+							break;
+						case 'drive type':
+							car.drivetype = parsedInput[1].trim();
+							break;
+						case 'number of doors':
+							car.numdoors = parsedInput[1].trim();
+							break;
+						case 'fuel type':
+							car.fuel = parsedInput[1].trim();
+							break;
+					}
+				}
+			}
+			if (i < descriptions.length && d[d.length -1].replace('poop', '') == car.kslUrl) {
+				d.pop();
+				car.description = d.join();
+			}
+			if (i < prices.length && p[p.length -1].replace('poop', '') == car.kslUrl) {
+				car.price = p[0] + ',' + p[1];
+			}
+			if (i < imgArrs.length && iu[iu.length -1].replace('poop', '') == car.kslUrl) {
+				iu.pop();
+				car.imgs = iu;
+			}
+			i++;
+		}
+		return callback(car);
+	}
 	// In case you want to customize the process, modify the options object
 	var options = {};
 
@@ -170,7 +171,7 @@ populateArgs(function (args) {
 		var textData = Uint8ArrToString(data);
 		if (textData.startsWith('poop')) {
 			parseCarData(textData.split('~=~'));
-		}				
+		}
 		console.log("textData:   " + textData);
 	});
 
@@ -182,12 +183,22 @@ populateArgs(function (args) {
 
 	// Triggered when the process closes
 	child.on("close", function (code) {
-		
-		console.log("Length of descriptions arr:" + descriptions.length);
+		kslUrls.forEach(function (url) {
+			createCarObject(url, function (car) {
+				mongo.insertNewObject('cars-info', car, function(result) {
+					cars.push(result);
+				});				
+			});
+		});
+		console.log(cars[0]);
+		/*
+		console.log("Length of cars arr:" + cars.length);
+		console.log("random car value test:" + cars[1].year);
+		console.log("description:" + cars[1].description);
 		console.log("Length of carInfoArrs arr:" + carInfoArrs.length);
-		console.log("Length of prices arr:" + prices.length);
-		console.log("Length of kslUrls arr:" + kslUrls.length);
-		console.log("Length of imgArrs arr:" + imgArrs.length);
+		console.log("price:" + cars[1].price);
+		console.log("kslUrls:" + cars[1].kslUrl);
+		console.log("imgArrs" + cars[1].imgs);*/
 		console.log("Process closed with status code: " + code);
 	});
 });

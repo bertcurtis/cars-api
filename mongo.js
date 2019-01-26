@@ -3,6 +3,7 @@ var MongoClient = require('mongodb').MongoClient;
 var url = 'mongodb://strickland-auto:strickland1@ds011873.mlab.com:11873/heroku_lbsm09cg';
 var dbName = 'heroku_lbsm09cg';
 var carUrlCollection = 'car-urls';
+var carsInfoCollection = 'cars-info';
 /*var tempUserCollection = 'temp-users';
 var monthNames = [
 	'January',
@@ -21,14 +22,14 @@ var monthNames = [
 */
 var self = this;
 
-self.insertNewUrl = function(userObject, callback) {
+self.insertNewObject = function(collectionName, userObject, callback) {
 	MongoClient.connect(
 		url,
 		{ useNewUrlParser: true },
 		function(err, db) {
 			if (err) throw err;
 			var dbo = db.db(dbName);
-			var collection = dbo.collection(carUrlCollection);
+			var collection = dbo.collection(collectionName);
 			collection.insertOne(userObject, function(err, result) {
 				if (err) throw err;
 				callback(result);

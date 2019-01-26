@@ -35,7 +35,7 @@ child.stdout.on('data', function (data) {
     console.log(urls.length);
     urls.forEach(function (url) {
         var insertObject = { url: url };
-        mongo.insertNewUrl(insertObject, function (result) {
+        mongo.insertNewObject('car-urls', insertObject, function (result) {
             console.log(url);
             //console.log(result);
         });
