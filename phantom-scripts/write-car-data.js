@@ -72,7 +72,7 @@ populateArgs(function (args) {
 		var i = 0;		
 		while (i < carInfoArrs.length) {	
 			car.kslUrl = url.replace(/\n/, '');	
-			console.log(car.kslUrl);
+			console.log("kslurl: " + car.kslUrl);
 			var ci = carInfoArrs[i].split(',');
 			var d = descriptions[i].split(',');
 			var p = prices[i].split(',');
@@ -82,11 +82,11 @@ populateArgs(function (args) {
 			//console.log("imgurls:" + iu[0]);
 			//console.log("end of array:" + sample[sample.length -1]);
 			//console.log("index url:" + url);
-			console.log(ci[ci.length -1].replace('poop', ''));
-			if (ci[ci.length -1].replace('poop', '') == car.kslUrl) {				
+			//console.log(ci[ci.length -1]);
+			if (ci[ci.length -1].includes(car.kslUrl) || car.kslUrl.includes(ci[ci.length -1])) {				
 				for (var x = 0; x < ci.length; ++x) {
 					var parsedInput = ci[x].split(':');
-					//console.log("parsedInput:" + parsedInput[0].toLowerCase());
+					console.log("parsedInput:" + parsedInput[0].toLowerCase());
 					switch (parsedInput[0].toLowerCase()) {
 						case 'vin':
 							car.vin = parsedInput[1].trim();
@@ -133,16 +133,19 @@ populateArgs(function (args) {
 					}
 				}
 			}
-			if (i < descriptions.length && d[d.length -1].replace('poop', '') == car.kslUrl) {
+			if (d[d.length -1].includes(car.kslUrl) || car.kslUrl.includes(d[d.length -1])) {
 				d.pop();
 				car.description = d.join();
+				console.log("car description: " + car.description);
 			}
-			if (i < prices.length && p[p.length -1].replace('poop', '') == car.kslUrl) {
+			if (p[p.length -1].includes(car.kslUrl) || car.kslUrl.includes(p[p.length -1])) {
 				car.price = p[0] + ',' + p[1];
+				console.log("price: " + car.price);
 			}
-			if (i < imgArrs.length && iu[iu.length -1].replace('poop', '') == car.kslUrl) {
+			if (iu[iu.length -1].includes(car.kslUrl) || car.kslUrl.includes(iu[iu.length -1])) {
 				iu.pop();
 				car.imgs = iu;
+				console.log("one img url: " + car.imgs[0]);
 			}
 			i++;
 		}
