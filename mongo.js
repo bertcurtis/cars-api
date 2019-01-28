@@ -155,7 +155,6 @@ self.tempUserCount = function(callback) {
 		}
 	);
 };
-
 self.tempUserCountByMonth = function(callback) {
 	MongoClient.connect(
 		url,
@@ -179,7 +178,6 @@ self.tempUserCountByMonth = function(callback) {
 						date.getMonth() !== previousDate.getMonth()
 							? (monthCount = 0)
 							: monthCount++;
-
 						var month = date.getMonth();
 						monthObject[monthNames[month]] = monthCount;
 						yearObject[date.getFullYear()] = monthObject;
