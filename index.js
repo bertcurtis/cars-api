@@ -1,23 +1,36 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const mabl = require('./mabl.js');
 const app = express();
 const mongo = require('./mongo.js');
 
+/*
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.html());
 app.set('view engine', 'pug');
-app.use(express.static(__dirname + '/public'));
+app.use(express.static(__dirname + '/public'));*/
 
-const PORT = 3000;//process.env.PORT;
+const PORT = process.env.PORT;
 
-app.get('/', function(req, res) { 
-	mabl.getSearchData(function(responseBody) {
-		console.log(responseBody);
-	});
-	
-
+app.get('/cars', function(req, res) { 
+	mongo.getAllCarsInfos(function(responseBody) {
+		res.send(responseBody);
+		//console.log(responseBody);
+	});	
 });
+/*
+app.get('/cars/getCarInfo/:id', function(req, res) { 
+	mongo.getAllCarInfo(req.params.id, function(responseBody) {
+		res.send(responseBody);
+		//console.log(responseBody);
+	});
+});
+
+app.get('/cars/getCarInfo/:id/:field', function(req, res) { 
+	mongo.getInfoFromCar(req.params.id, req.params.field, function(responseBody) {
+		res.send(responseBody);
+		//console.log(responseBody);
+	});
+});*/
 //use the pug template to generate a page with a link that contains the url to the app in isolation. The flow is as follows:
 // - Pull request created against master
 // - With review apps on in heroku, a review app is created (https://devcenter.heroku.com/articles/github-integration-review-apps)
@@ -118,5 +131,5 @@ app.post('/updateDocument', function(req, res) {
 		res.send(result);
 	});
 });
-
-app.listen(PORT);*/
+*/
+app.listen(PORT);

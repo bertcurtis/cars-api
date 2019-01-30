@@ -4,22 +4,6 @@ var url = 'mongodb://strickland-auto:strickland1@ds011873.mlab.com:11873/heroku_
 var dbName = 'heroku_lbsm09cg';
 var carUrlCollection = 'car-urls';
 var carsInfoCollection = 'cars-info';
-/*var tempUserCollection = 'temp-users';
-var monthNames = [
-	'January',
-	'February',
-	'March',
-	'April',
-	'May',
-	'June',
-	'July',
-	'August',
-	'September',
-	'October',
-	'November',
-	'December'
-];
-*/
 var self = this;
 
 self.insertNewObject = function(collectionName, userObject, callback) {
@@ -67,6 +51,58 @@ self.getAllUrls = function(callback) {
 			collection.find({}).toArray(function(err, result) {
     			if (err) throw err;
     			callback(result.map(function(val) { return val.url }));
+    			db.close();
+  			});
+		}
+	);
+};
+
+self.getAllCarsInfos = function(callback) {
+	MongoClient.connect(
+		url,
+		{ useNewUrlParser: true },
+		function(err, db) {
+			if (err) throw err;
+			var dbo = db.db(dbName);
+			var collection = dbo.collection(carsInfoCollection);
+			collection.find({}).toArray(function(err, result) {
+    			if (err) throw err;
+    			callback(result);
+    			db.close();
+  			});
+		}
+	);
+};
+
+//Returns an array of objects, although there should only be one
+self.getInfoFromCar = function(searchQuery, field, callback) {
+	MongoClient.connect(
+		url,
+		{ useNewUrlParser: true },
+		function(err, db) {
+			if (err) throw err;
+			var dbo = db.db(dbName);
+			var collection = dbo.collection(carsInfoCollection);
+			collection.find(searchQuery).toArray(function(err, result) {
+    			if (err) throw err;
+    			callback(result.map(function(val) { return val.field }));
+    			db.close();
+  			});
+		}
+	);
+};
+
+self.getAllCarInfo = function(searchQuery, callback) {
+	MongoClient.connect(
+		url,
+		{ useNewUrlParser: true },
+		function(err, db) {
+			if (err) throw err;
+			var dbo = db.db(dbName);
+			var collection = dbo.collection(carsInfoCollection);
+			collection.find(searchQuery).toArray(function(err, result) {
+    			if (err) throw err;
+    			callback(result);
     			db.close();
   			});
 		}
