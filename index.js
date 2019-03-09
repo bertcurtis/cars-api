@@ -1,13 +1,16 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
+var cors = require('cors');
 const mongo = require('./mongo.js');
 
 /*
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.html());
+
 app.set('view engine', 'pug');
 app.use(express.static(__dirname + '/public'));*/
+
+app.use(cors());
 
 const PORT = process.env.PORT;
 
