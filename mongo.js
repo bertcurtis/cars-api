@@ -79,7 +79,7 @@ self.getAllCarsInfos = function(callback) {
 					return a;
 				};
 				var filtered = result.filter(function(item){
-					return item.make.includes(tacoma);         
+					return item.make.includes("tacoma");         
 				});
 				finalArray = result.concat(filtered).unique();
     			callback(finalArray);
