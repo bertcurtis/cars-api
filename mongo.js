@@ -6,18 +6,6 @@ var carUrlCollection = 'car-urls';
 var carsInfoCollection = 'cars-info';
 var self = this;
 
-Array.prototype.unique = function() {
-    var a = this.concat();
-    for(var i=0; i<a.length; ++i) {
-        for(var j=i+1; j<a.length; ++j) {
-            if(a[i] === a[j])
-                a.splice(j--, 1);
-        }
-    }
-
-    return a;
-};
-
 self.insertNewObject = function(collectionName, userObject, callback) {
 	MongoClient.connect(
 		url,
@@ -79,6 +67,17 @@ self.getAllCarsInfos = function(callback) {
 			var collection = dbo.collection(carsInfoCollection);
 			collection.find({}).toArray(function(err, result) {
 				if (err) throw err;
+				Array.prototype.unique = function() {
+					var a = this.concat();
+					for(var i=0; i<a.length; ++i) {
+						for(var j=i+1; j<a.length; ++j) {
+							if(a[i] === a[j])
+								a.splice(j--, 1);
+						}
+					}
+				
+					return a;
+				};
 				var filtered = result.filter(function(item){
 					return item.make.includes(tacoma);         
 				});
