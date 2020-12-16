@@ -1,7 +1,7 @@
 var MongoClient = require('mongodb').MongoClient;
 //var ObjectId = require('mongodb').ObjectID;
-var url = 'mongodb://strickland-auto:strickland1@ds011873.mlab.com:11873/heroku_lbsm09cg';
-var dbName = 'heroku_lbsm09cg';
+var url = 'mongodb+srv://admin:admin@strickland-auto.ilhmf.mongodb.net/strickland-auto?retryWrites=true&w=majority'//'mongodb://strickland-auto:strickland1@ds011873.mlab.com:11873/heroku_lbsm09cg';
+var dbName = 'strickland-auto';
 var carUrlCollection = 'car-urls';
 var carsInfoCollection = 'cars-info';
 var self = this;
@@ -67,7 +67,6 @@ self.getAllCarsInfos = function(callback) {
 			var collection = dbo.collection(carsInfoCollection);
 			collection.find({}).toArray(function(err, result) {
 				if (err) throw err;
-
     			callback(result);
     			db.close();
   			});
